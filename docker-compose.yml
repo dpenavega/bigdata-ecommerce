@@ -1,0 +1,151 @@
+# =============================================================================
+# Big Data & Cloud Computing - Entrega 1
+# One command:  docker compose up -d
+#
+#   HDFS  : namenode + datanode1 + datanode2      (same images as Topic 3)
+#   YARN  : resourcemanager + nodemanager + historyserver (for Hadoop Streaming)
+#   Spark : spark-master + spark-worker-1         (standalone cluster)
+#   Dev   : jupyter (PySpark driver)              (same image as Topic 4)
+#
+# Spark master, worker and Jupyter use the SAME image on purpose, so the
+# Python and Spark versions on driver and executors always match.
+# =============================================================================
+
+services:
+
+  # ---------------------------------------------------------------- HDFS ----
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    restart: always
+    ports:
+      - "9870:9870"   # NameNode web UI
+      - "9000:9000"   # HDFS RPC (hdfs://namenode:9000)
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ./data:/datasets:ro          # local dataset folder, visible for hdfs dfs -put
+    environment:
+      - CLUSTER_NAME=bigdata-ecommerce
+    env_file:
+      - ./hadoop.env
+
+  datanode1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode1
+    hostname: datanode1
+    restart: always
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    hostname: datanode2
+    restart: always
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+
+  # ---------------------------------------------------------------- YARN ----
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    hostname: resourcemanager
+    restart: always
+    ports:
+      - "8088:8088"   # YARN web UI
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864"
+    env_file:
+      - ./hadoop.env
+
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    hostname: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 resourcemanager:8088"
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    hostname: historyserver
+    restart: always
+    ports:
+      - "8188:8188"   # job history UI
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop.env
+
+  # --------------------------------------------------------------- SPARK ----
+  spark-master:
+    image: quay.io/jupyter/pyspark-notebook
+    container_name: spark-master
+    hostname: spark-master
+    command: >
+      /usr/local/spark/bin/spark-class org.apache.spark.deploy.master.Master
+      --host spark-master --port 7077 --webui-port 8080
+    ports:
+      - "8080:8080"   # Spark master UI (workers + running apps)
+
+  spark-worker-1:
+    image: quay.io/jupyter/pyspark-notebook
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    command: >
+      /usr/local/spark/bin/spark-class org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+      --cores 2 --memory 2g
+      --webui-port 8081
+      --work-dir /tmp/spark-work
+    ports:
+      - "8081:8081"   # Spark worker UI
+    volumes:
+      - ./:/home/jovyan/work         # same path as Jupyter, so file:// paths work on executors
+    depends_on:
+      - spark-master
+
+  # ------------------------------------------------------------ JUPYTER ----
+  jupyter:
+    image: quay.io/jupyter/pyspark-notebook
+    container_name: jupyter
+    hostname: jupyter                # executors connect back to the driver by this name
+    user: root                       # same trick as in class: fix permissions of the mount
+    environment:
+      CHOWN_EXTRA: "/home/jovyan/work"
+      CHOWN_EXTRA_OPTS: "-R"
+      JUPYTER_TOKEN: "bigdata"       # login at http://localhost:8888/?token=bigdata
+      SPARK_MASTER_URL: "spark://spark-master:7077"
+      HDFS_URL: "hdfs://namenode:9000"
+    ports:
+      - "8888:8888"   # Jupyter
+      - "4040:4040"   # Spark UI of the driver (jobs, stages, DAG)
+    volumes:
+      - ./:/home/jovyan/work
+    depends_on:
+      - spark-master
+      - namenode
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode1:
+  hadoop_datanode2:
+  hadoop_historyserver:

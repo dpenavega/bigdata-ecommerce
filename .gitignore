@@ -1,0 +1,17 @@
+# Dataset (9 GB) - never commit it, everyone downloads it into data/
+data/*
+!data/.gitkeep
+
+# Jupyter / Python
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+spark-warehouse/
+metastore_db/
+derby.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
