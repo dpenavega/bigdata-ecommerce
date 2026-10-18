@@ -36,7 +36,7 @@ the executors always run the same Python and Spark versions.
 git clone <repo-url>
 cd bigdata-ecommerce
 # put 2019-Nov.csv inside ./data   (download from Kaggle, unzip)
-docker compose up -d
+docker compose up -d --build
 ```
 
 The first run takes several minutes (it downloads the images). Check it:
@@ -65,7 +65,7 @@ Spark application UI (only while a SparkSession is running): http://localhost:40
 docker exec -it namenode hdfs dfsadmin -report
 
 # Spark + HDFS end-to-end test (must end with "ENVIRONMENT OK")
-docker exec -it -u jovyan jupyter python /home/jovyan/work/src/check_cluster.py
+docker exec -it -u jovyan jupyter /usr/local/spark/bin/spark-submit /home/jovyan/work/src/check_cluster.py
 ```
 
 ## 3. Using Spark from a notebook
@@ -84,7 +84,43 @@ spark = (SparkSession.builder
 spark.read.parquet("hdfs://namenode:9000/tmp/check_cluster").show()
 ```
 
-## 4. Stop
+## 4. Pipeline steps
+
+All parameters are in `config/pipeline.yaml`. Set `sample_mode: true` for development
+(uses `data/sample.csv` and the `/data_sample` tree in HDFS) and `false` for final runs.
+
+```bash
+# development sample: first 2M rows of the full file
+docker exec -u jovyan jupyter bash -c "head -n 2000001 /home/jovyan/work/data/2019-Nov.csv > /home/jovyan/work/data/sample.csv"
+
+# B. zones + raw ingestion -> CSV to Parquet -> format comparison
+docker exec -it -u jovyan -w /home/jovyan/work jupyter /usr/local/spark/bin/spark-submit src/ingest/ingest_raw.py
+docker exec -it -u jovyan -w /home/jovyan/work jupyter /usr/local/spark/bin/spark-submit src/processing/etl.py
+docker exec -it -u jovyan -w /home/jovyan/work jupyter /usr/local/spark/bin/spark-submit src/ingest/compare_formats.py
+
+# B. evidence of blocks and replication
+docker exec namenode hdfs fsck /data/raw/ecommerce/2019-Nov.csv -files -blocks -locations
+```
+
+```bash
+# C. MapReduce (Hadoop Streaming on YARN, runs inside the namenode container) vs Spark RDD
+docker exec namenode bash /mapreduce/run_mapreduce.sh /data/raw/ecommerce/2019-Nov.csv /data/results/mr_brand_revenue
+docker exec -it -u jovyan -w /home/jovyan/work jupyter /usr/local/spark/bin/spark-submit src/mapreduce/rdd_brand_revenue.py
+```
+
+The `nodemanager` image is the class image plus `python3` (`docker/nodemanager/Dockerfile`),
+because Hadoop Streaming runs the Python mapper/reducer there. It is built automatically by
+`docker compose up -d --build`.
+
+HDFS layout:
+
+```
+/data/raw/ecommerce/2019-Nov.csv              original file, untouched
+/data/curated/events/event_date=2019-11-01/   clean Parquet, one folder per day
+/data/results/                                query outputs
+```
+
+## 5. Stop
 
 ```bash
 docker compose down        # stops containers, HDFS data is KEPT (volumes)

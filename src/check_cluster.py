@@ -7,7 +7,7 @@ Checks that, from the Jupyter container:
   3. Spark can write Parquet to HDFS and read it back.
 
 Run it with:
-  docker exec -it -u jovyan jupyter python /home/jovyan/work/src/check_cluster.py
+  docker exec -it -u jovyan jupyter /usr/local/spark/bin/spark-submit /home/jovyan/work/src/check_cluster.py
 """
 import os
 import socket

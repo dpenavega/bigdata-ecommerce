@@ -1,0 +1,11 @@
+{
+  "sample_mode": false,
+  "input": "hdfs://namenode:9000/data/raw/ecommerce/2019-Nov.csv",
+  "rdd_seconds": 38.1,
+  "brands": 2488,
+  "same_result_as_mapreduce": true,
+  "lines_of_code": {
+    "mapreduce (mapper + reducer + run script)": 62,
+    "rdd (parse + pipeline)": 14
+  }
+}

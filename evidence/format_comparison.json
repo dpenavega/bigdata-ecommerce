@@ -1,0 +1,32 @@
+{
+  "sample_mode": false,
+  "csv": {
+    "path": "hdfs://namenode:9000/data/raw/ecommerce/2019-Nov.csv",
+    "size_mb": 9006.8,
+    "size_on_disk_with_replication_mb": 27020.3,
+    "rows": 67501979,
+    "count_seconds": [
+      11.72,
+      11.37
+    ],
+    "avg_price_seconds": [
+      39.77,
+      37.61
+    ]
+  },
+  "parquet": {
+    "path": "hdfs://namenode:9000/data/curated/events",
+    "size_mb": 3515.8,
+    "size_on_disk_with_replication_mb": 10547.3,
+    "rows": 67213463,
+    "count_seconds": [
+      2.52,
+      2.07
+    ],
+    "avg_price_seconds": [
+      6.17,
+      4.32
+    ]
+  },
+  "size_ratio_csv_over_parquet": 2.56
+}

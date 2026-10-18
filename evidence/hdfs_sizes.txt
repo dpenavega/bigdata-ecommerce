@@ -1,0 +1,2 @@
+8.4 G  25.2 G  /data/raw/ecommerce
+3.3 G  9.8 G   /data/curated/events

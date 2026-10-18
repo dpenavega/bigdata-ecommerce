@@ -25,6 +25,7 @@ services:
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
       - ./data:/datasets:ro          # local dataset folder, visible for hdfs dfs -put
+      - ./src/mapreduce:/mapreduce:ro  # Hadoop Streaming scripts (section C)
     environment:
       - CLUSTER_NAME=bigdata-ecommerce
     env_file:
@@ -72,7 +73,9 @@ services:
       - ./hadoop.env
 
   nodemanager:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    # class image + python3 (Hadoop Streaming runs the Python mapper/reducer here)
+    build: ./docker/nodemanager
+    image: bigdata-nodemanager-python:hadoop3.2.1
     container_name: nodemanager
     hostname: nodemanager
     restart: always

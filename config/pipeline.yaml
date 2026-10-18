@@ -1,0 +1,34 @@
+# =============================================================================
+# Pipeline configuration (section E): every path and parameter lives here,
+# none are hard-coded in src/.
+# =============================================================================
+
+# true  -> uses data/sample.csv and the /data_sample tree in HDFS (fast, for development)
+# false -> uses the full 2019-Nov.csv and the /data tree (final runs and timings)
+sample_mode: false
+
+spark:
+  master: spark://spark-master:7077
+  driver_host: jupyter          # name of the Jupyter container (executors connect back to it)
+  executor_memory: 1g
+  shuffle_partitions: 32        # default is 200, too many for 1 worker with 2 cores
+  timezone: UTC                 # event_time in the dataset is UTC
+
+hdfs:
+  url: hdfs://namenode:9000
+  root: /data                   # becomes /data_sample when sample_mode is true
+
+local:
+  full_csv: /home/jovyan/work/data/2019-Nov.csv
+  sample_csv: /home/jovyan/work/data/sample.csv
+  evidence_dir: /home/jovyan/work/evidence
+
+zones:                          # relative to hdfs.root
+  raw: raw/ecommerce
+  curated: curated/events
+  results: results
+
+dataset:
+  partition_column: event_date  # column chosen at registration
+  csv_timestamp_format: "yyyy-MM-dd HH:mm:ss 'UTC'"
+  valid_event_types: [view, cart, purchase]
