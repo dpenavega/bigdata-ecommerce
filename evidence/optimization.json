@@ -1,0 +1,28 @@
+{
+  "question": "purchases and revenue between 2019-11-25 and 2019-11-30",
+  "before": {
+    "filter_on": "event_time (normal column) -> scans all partitions",
+    "seconds": [
+      10.34,
+      0.04
+    ],
+    "result": {
+      "purchases": 158086,
+      "revenue": 46012623.28
+    },
+    "partition_filters_in_plan": false
+  },
+  "after": {
+    "filter_on": "event_date (partition column) -> partition pruning",
+    "seconds": [
+      1.39,
+      0.04
+    ],
+    "result": {
+      "purchases": 158086,
+      "revenue": 46012623.28
+    },
+    "partition_filters_in_plan": true
+  },
+  "same_result": true
+}
