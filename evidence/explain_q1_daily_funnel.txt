@@ -10,43 +10,43 @@ AdaptiveSparkPlan (8)
 
 
 (1) Scan parquet 
-Output [3]: [event_type#219, price#224, event_date#231]
+Output [3]: [event_type#1, price#6, event_date#13]
 Batched: true
 Location: InMemoryFileIndex [hdfs://namenode:9000/data/curated/events]
 ReadSchema: struct<event_type:string,price:double>
 
 (2) HashAggregate
-Input [3]: [event_type#219, price#224, event_date#231]
-Keys [1]: [event_date#231]
-Functions [4]: [partial_sum(CASE WHEN (event_type#219 = view) THEN 1 ELSE 0 END), partial_sum(CASE WHEN (event_type#219 = cart) THEN 1 ELSE 0 END), partial_sum(CASE WHEN (event_type#219 = purchase) THEN 1 ELSE 0 END), partial_sum(CASE WHEN (event_type#219 = purchase) THEN price#224 ELSE 0.0 END)]
-Aggregate Attributes [4]: [sum#304L, sum#305L, sum#306L, sum#307]
-Results [5]: [event_date#231, sum#308L, sum#309L, sum#310L, sum#311]
+Input [3]: [event_type#1, price#6, event_date#13]
+Keys [1]: [event_date#13]
+Functions [4]: [partial_sum(CASE WHEN (event_type#1 = view) THEN 1 ELSE 0 END), partial_sum(CASE WHEN (event_type#1 = cart) THEN 1 ELSE 0 END), partial_sum(CASE WHEN (event_type#1 = purchase) THEN 1 ELSE 0 END), partial_sum(CASE WHEN (event_type#1 = purchase) THEN price#6 ELSE 0.0 END)]
+Aggregate Attributes [4]: [sum#86L, sum#87L, sum#88L, sum#89]
+Results [5]: [event_date#13, sum#90L, sum#91L, sum#92L, sum#93]
 
 (3) Exchange
-Input [5]: [event_date#231, sum#308L, sum#309L, sum#310L, sum#311]
-Arguments: hashpartitioning(event_date#231, 32), ENSURE_REQUIREMENTS, [plan_id=455]
+Input [5]: [event_date#13, sum#90L, sum#91L, sum#92L, sum#93]
+Arguments: hashpartitioning(event_date#13, 32), ENSURE_REQUIREMENTS, [plan_id=165]
 
 (4) HashAggregate
-Input [5]: [event_date#231, sum#308L, sum#309L, sum#310L, sum#311]
-Keys [1]: [event_date#231]
-Functions [4]: [sum(CASE WHEN (event_type#219 = view) THEN 1 ELSE 0 END), sum(CASE WHEN (event_type#219 = cart) THEN 1 ELSE 0 END), sum(CASE WHEN (event_type#219 = purchase) THEN 1 ELSE 0 END), sum(CASE WHEN (event_type#219 = purchase) THEN price#224 ELSE 0.0 END)]
-Aggregate Attributes [4]: [sum(CASE WHEN (event_type#219 = view) THEN 1 ELSE 0 END)#250L, sum(CASE WHEN (event_type#219 = cart) THEN 1 ELSE 0 END)#251L, sum(CASE WHEN (event_type#219 = purchase) THEN 1 ELSE 0 END)#252L, sum(CASE WHEN (event_type#219 = purchase) THEN price#224 ELSE 0.0 END)#253]
-Results [5]: [event_date#231, sum(CASE WHEN (event_type#219 = view) THEN 1 ELSE 0 END)#250L AS views#232L, sum(CASE WHEN (event_type#219 = cart) THEN 1 ELSE 0 END)#251L AS carts#233L, sum(CASE WHEN (event_type#219 = purchase) THEN 1 ELSE 0 END)#252L AS purchases#234L, round(sum(CASE WHEN (event_type#219 = purchase) THEN price#224 ELSE 0.0 END)#253, 2) AS revenue#235]
+Input [5]: [event_date#13, sum#90L, sum#91L, sum#92L, sum#93]
+Keys [1]: [event_date#13]
+Functions [4]: [sum(CASE WHEN (event_type#1 = view) THEN 1 ELSE 0 END), sum(CASE WHEN (event_type#1 = cart) THEN 1 ELSE 0 END), sum(CASE WHEN (event_type#1 = purchase) THEN 1 ELSE 0 END), sum(CASE WHEN (event_type#1 = purchase) THEN price#6 ELSE 0.0 END)]
+Aggregate Attributes [4]: [sum(CASE WHEN (event_type#1 = view) THEN 1 ELSE 0 END)#32L, sum(CASE WHEN (event_type#1 = cart) THEN 1 ELSE 0 END)#33L, sum(CASE WHEN (event_type#1 = purchase) THEN 1 ELSE 0 END)#34L, sum(CASE WHEN (event_type#1 = purchase) THEN price#6 ELSE 0.0 END)#35]
+Results [5]: [event_date#13, sum(CASE WHEN (event_type#1 = view) THEN 1 ELSE 0 END)#32L AS views#14L, sum(CASE WHEN (event_type#1 = cart) THEN 1 ELSE 0 END)#33L AS carts#15L, sum(CASE WHEN (event_type#1 = purchase) THEN 1 ELSE 0 END)#34L AS purchases#16L, round(sum(CASE WHEN (event_type#1 = purchase) THEN price#6 ELSE 0.0 END)#35, 2) AS revenue#17]
 
 (5) Project
-Output [6]: [event_date#231, views#232L, carts#233L, purchases#234L, revenue#235, round(((cast(purchases#234L as double) / cast(views#232L as double)) * 100.0), 3) AS conversion_pct#255]
-Input [5]: [event_date#231, views#232L, carts#233L, purchases#234L, revenue#235]
+Output [6]: [event_date#13, views#14L, carts#15L, purchases#16L, revenue#17, round(((cast(purchases#16L as double) / cast(views#14L as double)) * 100.0), 3) AS conversion_pct#37]
+Input [5]: [event_date#13, views#14L, carts#15L, purchases#16L, revenue#17]
 
 (6) Exchange
-Input [6]: [event_date#231, views#232L, carts#233L, purchases#234L, revenue#235, conversion_pct#255]
-Arguments: rangepartitioning(event_date#231 ASC NULLS FIRST, 32), ENSURE_REQUIREMENTS, [plan_id=459]
+Input [6]: [event_date#13, views#14L, carts#15L, purchases#16L, revenue#17, conversion_pct#37]
+Arguments: rangepartitioning(event_date#13 ASC NULLS FIRST, 32), ENSURE_REQUIREMENTS, [plan_id=169]
 
 (7) Sort
-Input [6]: [event_date#231, views#232L, carts#233L, purchases#234L, revenue#235, conversion_pct#255]
-Arguments: [event_date#231 ASC NULLS FIRST], true, 0
+Input [6]: [event_date#13, views#14L, carts#15L, purchases#16L, revenue#17, conversion_pct#37]
+Arguments: [event_date#13 ASC NULLS FIRST], true, 0
 
 (8) AdaptiveSparkPlan
-Output [6]: [event_date#231, views#232L, carts#233L, purchases#234L, revenue#235, conversion_pct#255]
+Output [6]: [event_date#13, views#14L, carts#15L, purchases#16L, revenue#17, conversion_pct#37]
 Arguments: isFinalPlan=false
 
 

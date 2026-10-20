@@ -18,76 +18,76 @@ AdaptiveSparkPlan (16)
 
 
 (1) Scan parquet 
-Output [5]: [event_type#219, brand#223, price#224, cat_l1#227, event_date#231]
+Output [5]: [event_type#1, brand#5, price#6, cat_l1#9, event_date#13]
 Batched: true
 Location: InMemoryFileIndex [hdfs://namenode:9000/data/curated/events]
 PushedFilters: [IsNotNull(event_type), IsNotNull(brand), EqualTo(event_type,purchase), Not(EqualTo(brand,unknown))]
 ReadSchema: struct<event_type:string,brand:string,price:double,cat_l1:string>
 
 (2) Filter
-Input [5]: [event_type#219, brand#223, price#224, cat_l1#227, event_date#231]
-Condition : (((isnotnull(event_type#219) AND isnotnull(brand#223)) AND (event_type#219 = purchase)) AND NOT (brand#223 = unknown))
+Input [5]: [event_type#1, brand#5, price#6, cat_l1#9, event_date#13]
+Condition : (((isnotnull(event_type#1) AND isnotnull(brand#5)) AND (event_type#1 = purchase)) AND NOT (brand#5 = unknown))
 
 (3) Project
-Output [3]: [brand#223, price#224, cat_l1#227]
-Input [5]: [event_type#219, brand#223, price#224, cat_l1#227, event_date#231]
+Output [3]: [brand#5, price#6, cat_l1#9]
+Input [5]: [event_type#1, brand#5, price#6, cat_l1#9, event_date#13]
 
 (4) HashAggregate
-Input [3]: [brand#223, price#224, cat_l1#227]
-Keys [2]: [cat_l1#227, brand#223]
-Functions [2]: [partial_sum(price#224), partial_count(1)]
-Aggregate Attributes [2]: [sum#354, count#355L]
-Results [4]: [cat_l1#227, brand#223, sum#356, count#357L]
+Input [3]: [brand#5, price#6, cat_l1#9]
+Keys [2]: [cat_l1#9, brand#5]
+Functions [2]: [partial_sum(price#6), partial_count(1)]
+Aggregate Attributes [2]: [sum#136, count#137L]
+Results [4]: [cat_l1#9, brand#5, sum#138, count#139L]
 
 (5) Exchange
-Input [4]: [cat_l1#227, brand#223, sum#356, count#357L]
-Arguments: hashpartitioning(cat_l1#227, brand#223, 32), ENSURE_REQUIREMENTS, [plan_id=796]
+Input [4]: [cat_l1#9, brand#5, sum#138, count#139L]
+Arguments: hashpartitioning(cat_l1#9, brand#5, 32), ENSURE_REQUIREMENTS, [plan_id=506]
 
 (6) HashAggregate
-Input [4]: [cat_l1#227, brand#223, sum#356, count#357L]
-Keys [2]: [cat_l1#227, brand#223]
-Functions [2]: [sum(price#224), count(1)]
-Aggregate Attributes [2]: [sum(price#224)#273, count(1)#272L]
-Results [4]: [cat_l1#227, brand#223, round(sum(price#224)#273, 2) AS revenue#256, count(1)#272L AS purchases#257L]
+Input [4]: [cat_l1#9, brand#5, sum#138, count#139L]
+Keys [2]: [cat_l1#9, brand#5]
+Functions [2]: [sum(price#6), count(1)]
+Aggregate Attributes [2]: [sum(price#6)#55, count(1)#54L]
+Results [4]: [cat_l1#9, brand#5, round(sum(price#6)#55, 2) AS revenue#38, count(1)#54L AS purchases#39L]
 
 (7) Sort
-Input [4]: [cat_l1#227, brand#223, revenue#256, purchases#257L]
-Arguments: [cat_l1#227 ASC NULLS FIRST, revenue#256 DESC NULLS LAST], false, 0
+Input [4]: [cat_l1#9, brand#5, revenue#38, purchases#39L]
+Arguments: [cat_l1#9 ASC NULLS FIRST, revenue#38 DESC NULLS LAST], false, 0
 
 (8) WindowGroupLimit
-Input [4]: [cat_l1#227, brand#223, revenue#256, purchases#257L]
-Arguments: [cat_l1#227], [revenue#256 DESC NULLS LAST], rank(revenue#256), 3, Partial
+Input [4]: [cat_l1#9, brand#5, revenue#38, purchases#39L]
+Arguments: [cat_l1#9], [revenue#38 DESC NULLS LAST], rank(revenue#38), 3, Partial
 
 (9) Exchange
-Input [4]: [cat_l1#227, brand#223, revenue#256, purchases#257L]
-Arguments: hashpartitioning(cat_l1#227, 32), ENSURE_REQUIREMENTS, [plan_id=802]
+Input [4]: [cat_l1#9, brand#5, revenue#38, purchases#39L]
+Arguments: hashpartitioning(cat_l1#9, 32), ENSURE_REQUIREMENTS, [plan_id=512]
 
 (10) Sort
-Input [4]: [cat_l1#227, brand#223, revenue#256, purchases#257L]
-Arguments: [cat_l1#227 ASC NULLS FIRST, revenue#256 DESC NULLS LAST], false, 0
+Input [4]: [cat_l1#9, brand#5, revenue#38, purchases#39L]
+Arguments: [cat_l1#9 ASC NULLS FIRST, revenue#38 DESC NULLS LAST], false, 0
 
 (11) WindowGroupLimit
-Input [4]: [cat_l1#227, brand#223, revenue#256, purchases#257L]
-Arguments: [cat_l1#227], [revenue#256 DESC NULLS LAST], rank(revenue#256), 3, Final
+Input [4]: [cat_l1#9, brand#5, revenue#38, purchases#39L]
+Arguments: [cat_l1#9], [revenue#38 DESC NULLS LAST], rank(revenue#38), 3, Final
 
 (12) Window
-Input [4]: [cat_l1#227, brand#223, revenue#256, purchases#257L]
-Arguments: [rank(revenue#256) windowspecdefinition(cat_l1#227, revenue#256 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rank#274], [cat_l1#227], [revenue#256 DESC NULLS LAST]
+Input [4]: [cat_l1#9, brand#5, revenue#38, purchases#39L]
+Arguments: [rank(revenue#38) windowspecdefinition(cat_l1#9, revenue#38 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rank#56], [cat_l1#9], [revenue#38 DESC NULLS LAST]
 
 (13) Filter
-Input [5]: [cat_l1#227, brand#223, revenue#256, purchases#257L, rank#274]
-Condition : (rank#274 <= 3)
+Input [5]: [cat_l1#9, brand#5, revenue#38, purchases#39L, rank#56]
+Condition : (rank#56 <= 3)
 
 (14) Exchange
-Input [5]: [cat_l1#227, brand#223, revenue#256, purchases#257L, rank#274]
-Arguments: rangepartitioning(cat_l1#227 ASC NULLS FIRST, rank#274 ASC NULLS FIRST, 32), ENSURE_REQUIREMENTS, [plan_id=808]
+Input [5]: [cat_l1#9, brand#5, revenue#38, purchases#39L, rank#56]
+Arguments: rangepartitioning(cat_l1#9 ASC NULLS FIRST, rank#56 ASC NULLS FIRST, 32), ENSURE_REQUIREMENTS, [plan_id=518]
 
 (15) Sort
-Input [5]: [cat_l1#227, brand#223, revenue#256, purchases#257L, rank#274]
-Arguments: [cat_l1#227 ASC NULLS FIRST, rank#274 ASC NULLS FIRST], true, 0
+Input [5]: [cat_l1#9, brand#5, revenue#38, purchases#39L, rank#56]
+Arguments: [cat_l1#9 ASC NULLS FIRST, rank#56 ASC NULLS FIRST], true, 0
 
 (16) AdaptiveSparkPlan
-Output [5]: [cat_l1#227, brand#223, revenue#256, purchases#257L, rank#274]
+Output [5]: [cat_l1#9, brand#5, revenue#38, purchases#39L, rank#56]
 Arguments: isFinalPlan=false
 
 
