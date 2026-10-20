@@ -32,3 +32,21 @@ dataset:
   partition_column: event_date  # column chosen at registration
   csv_timestamp_format: "yyyy-MM-dd HH:mm:ss 'UTC'"
   valid_event_types: [view, cart, purchase]
+
+pipeline:                       # steps run by src/run_pipeline.py, in this order
+  steps: [ingest, etl, quality, queries, ml]
+
+quality:
+  fail_on_error: true           # stop the pipeline if a check fails
+  max_null_pct: 0.0             # required columns in curated must have no nulls
+  price_min: 0.01
+  price_max: 100000
+  date_from: "2019-11-01"
+  date_to: "2019-11-30"
+  check_duplicates: true        # needs a full shuffle: slow on the full dataset
+
+ml:
+  # label: a user active in the 1st half of the month buys in the 2nd half
+  split_date: "2019-11-16"      # features from events BEFORE this date, label from events ON/AFTER it
+  test_fraction: 0.2
+  seed: 42

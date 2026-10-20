@@ -9,40 +9,40 @@ AdaptiveSparkPlan (7)
 
 
 (1) Scan parquet 
-Output [4]: [event_time#0, event_type#1, price#6, event_date#13]
+Output [4]: [event_time#218, event_type#219, price#224, event_date#231]
 Batched: true
 Location: InMemoryFileIndex [hdfs://namenode:9000/data/curated/events]
 PushedFilters: [IsNotNull(event_time), IsNotNull(event_type), GreaterThanOrEqual(event_time,2019-11-25 00:00:00.0), LessThan(event_time,2019-12-01 00:00:00.0), EqualTo(event_type,purchase)]
 ReadSchema: struct<event_time:timestamp,event_type:string,price:double>
 
 (2) Filter
-Input [4]: [event_time#0, event_type#1, price#6, event_date#13]
-Condition : ((((isnotnull(event_time#0) AND isnotnull(event_type#1)) AND (event_time#0 >= 2019-11-25 00:00:00)) AND (event_time#0 < 2019-12-01 00:00:00)) AND (event_type#1 = purchase))
+Input [4]: [event_time#218, event_type#219, price#224, event_date#231]
+Condition : ((((isnotnull(event_time#218) AND isnotnull(event_type#219)) AND (event_time#218 >= 2019-11-25 00:00:00)) AND (event_time#218 < 2019-12-01 00:00:00)) AND (event_type#219 = purchase))
 
 (3) Project
-Output [1]: [price#6]
-Input [4]: [event_time#0, event_type#1, price#6, event_date#13]
+Output [1]: [price#224]
+Input [4]: [event_time#218, event_type#219, price#224, event_date#231]
 
 (4) HashAggregate
-Input [1]: [price#6]
+Input [1]: [price#224]
 Keys: []
-Functions [2]: [partial_count(1), partial_sum(price#6)]
-Aggregate Attributes [2]: [count#296L, sum#297]
-Results [2]: [count#298L, sum#299]
+Functions [2]: [partial_count(1), partial_sum(price#224)]
+Aggregate Attributes [2]: [count#514L, sum#515]
+Results [2]: [count#516L, sum#517]
 
 (5) Exchange
-Input [2]: [count#298L, sum#299]
-Arguments: SinglePartition, ENSURE_REQUIREMENTS, [plan_id=754]
+Input [2]: [count#516L, sum#517]
+Arguments: SinglePartition, ENSURE_REQUIREMENTS, [plan_id=1044]
 
 (6) HashAggregate
-Input [2]: [count#298L, sum#299]
+Input [2]: [count#516L, sum#517]
 Keys: []
-Functions [2]: [count(1), sum(price#6)]
-Aggregate Attributes [2]: [count(1)#276L, sum(price#6)#277]
-Results [2]: [count(1)#276L AS purchases#260L, round(sum(price#6)#277, 2) AS revenue#261]
+Functions [2]: [count(1), sum(price#224)]
+Aggregate Attributes [2]: [count(1)#494L, sum(price#224)#495]
+Results [2]: [count(1)#494L AS purchases#478L, round(sum(price#224)#495, 2) AS revenue#479]
 
 (7) AdaptiveSparkPlan
-Output [2]: [purchases#260L, revenue#261]
+Output [2]: [purchases#478L, revenue#479]
 Arguments: isFinalPlan=false
 
 

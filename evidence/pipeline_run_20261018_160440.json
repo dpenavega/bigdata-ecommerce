@@ -1,0 +1,19 @@
+{
+  "finished_at": "2026-10-18T16:04:29",
+  "sample_mode": false,
+  "steps": [
+    "quality",
+    "ml"
+  ],
+  "seconds_per_step": {
+    "quality": 377.5,
+    "ml": 203.1
+  },
+  "total_seconds": 580.6,
+  "outputs": {
+    "curated_rows": 67213463,
+    "q1_daily_funnel": 30,
+    "q2_top_brands_by_category": 42,
+    "q3_daily_revenue_trend": 29
+  }
+}

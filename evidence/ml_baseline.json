@@ -1,0 +1,28 @@
+{
+  "sample_mode": false,
+  "target": "user active before split_date buys on/after split_date",
+  "split_date": "2019-11-16",
+  "users": 2260670,
+  "positives": 178779,
+  "positive_rate_pct": 7.91,
+  "train_rows": 1807843,
+  "test_rows": 452827,
+  "model": "LogisticRegression (standardized features)",
+  "test_auc": 0.7351,
+  "test_accuracy": 0.9214,
+  "accuracy_if_always_predict_0": 0.9209,
+  "coefficients": {
+    "n_events": -0.0107,
+    "n_views": -0.0323,
+    "n_carts": 0.1819,
+    "n_purchases": 0.3001,
+    "spent": 0.0071,
+    "n_sessions": -0.252,
+    "n_products": 0.124,
+    "n_categories": 0.1793,
+    "avg_price_viewed": 0.0421,
+    "active_days": 0.2194,
+    "days_since_last": -0.4102
+  },
+  "seconds": 215.3
+}

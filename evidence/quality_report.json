@@ -1,0 +1,71 @@
+{
+  "sample_mode": false,
+  "all_passed": true,
+  "checks": [
+    {
+      "check": "not_empty",
+      "passed": true,
+      "detail": {
+        "rows": 67213463
+      }
+    },
+    {
+      "check": "no_nulls_in_required_columns",
+      "passed": true,
+      "detail": {
+        "null_pct": {
+          "event_time": 0.0,
+          "event_type": 0.0,
+          "product_id": 0.0,
+          "price": 0.0,
+          "user_id": 0.0,
+          "user_session": 0.0,
+          "brand": 0.0,
+          "category_code": 0.0,
+          "event_date": 0.0
+        },
+        "max_allowed_pct": 0.0
+      }
+    },
+    {
+      "check": "price_in_range",
+      "passed": true,
+      "detail": {
+        "out_of_range": 0,
+        "min": 0.77,
+        "max": 2574.07,
+        "allowed": [
+          0.01,
+          100000
+        ]
+      }
+    },
+    {
+      "check": "valid_event_types",
+      "passed": true,
+      "detail": {
+        "invalid": 0
+      }
+    },
+    {
+      "check": "dates_in_period",
+      "passed": true,
+      "detail": {
+        "out_of_period": 0,
+        "min": "2019-11-01",
+        "max": "2019-11-30",
+        "expected": [
+          "2019-11-01",
+          "2019-11-30"
+        ]
+      }
+    },
+    {
+      "check": "no_duplicates",
+      "passed": true,
+      "detail": {
+        "duplicate_rows": 0
+      }
+    }
+  ]
+}

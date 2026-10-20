@@ -1,0 +1,67 @@
+{
+  "sample_mode": false,
+  "total_raw_events": 67501979,
+  "valid_events": 67213463,
+  "quarantined_events": 288516,
+  "quarantined_pct": 0.4274,
+  "errors_per_rule": {
+    "invalid_price": 188088,
+    "duplicate": 100519,
+    "missing_required": 10
+  },
+  "warnings_per_rule": {
+    "missing_category": 21898171,
+    "missing_brand": 9218235,
+    "price_outlier": 294092,
+    "inconsistent_brand": 26457
+  },
+  "warnings_pct_of_total": {
+    "missing_category": 32.44,
+    "missing_brand": 13.66,
+    "price_outlier": 0.44,
+    "inconsistent_brand": 0.04
+  },
+  "example_rejected_event_per_rule": {
+    "duplicate": {
+      "event_time": "2019-11-05 17:09:35",
+      "event_type": "cart",
+      "product_id": "3600163",
+      "category_id": "2053013563810775923",
+      "category_code": "appliances.kitchen.washer",
+      "brand": "indesit",
+      "price": "185.33",
+      "user_id": "561371385",
+      "user_session": "2e933e9c-57d2-4c65-9545-f1d8535c0115"
+    },
+    "invalid_price": {
+      "event_time": "2019-11-01 19:26:14",
+      "event_type": "view",
+      "product_id": "13201310",
+      "category_id": "2053013557192163841",
+      "category_code": "furniture.bedroom.bed",
+      "brand": "None",
+      "price": "0.0",
+      "user_id": "543396150",
+      "user_session": "03afb857-1347-45d6-a8da-0ceda7601fdc"
+    },
+    "missing_required": {
+      "event_time": "2019-11-09 15:32:27",
+      "event_type": "cart",
+      "product_id": "19700004",
+      "category_id": "2053013559104766575",
+      "category_code": "None",
+      "brand": "kabrita",
+      "price": "37.77",
+      "user_id": "539704497",
+      "user_session": "None"
+    }
+  },
+  "quarantine_path": "hdfs://namenode:9000/data/quarantine/events",
+  "consistency_with_curated_zone": {
+    "curated_rows": 67213463,
+    "valid_events_here": 67213463,
+    "match": true,
+    "difference_explained_by_out_of_period": true
+  },
+  "seconds": 785.0
+}

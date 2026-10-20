@@ -3,7 +3,7 @@
   "before": {
     "filter_on": "event_time (normal column) -> scans all partitions",
     "seconds": [
-      10.34,
+      7.32,
       0.04
     ],
     "result": {
@@ -15,8 +15,8 @@
   "after": {
     "filter_on": "event_date (partition column) -> partition pruning",
     "seconds": [
-      1.39,
-      0.04
+      1.02,
+      0.03
     ],
     "result": {
       "purchases": 158086,

@@ -13,56 +13,56 @@ AdaptiveSparkPlan (11)
 
 
 (1) Scan parquet 
-Output [3]: [event_type#1, price#6, event_date#13]
+Output [3]: [event_type#219, price#224, event_date#231]
 Batched: true
 Location: InMemoryFileIndex [hdfs://namenode:9000/data/curated/events]
 PushedFilters: [IsNotNull(event_type), EqualTo(event_type,purchase)]
 ReadSchema: struct<event_type:string,price:double>
 
 (2) Filter
-Input [3]: [event_type#1, price#6, event_date#13]
-Condition : (isnotnull(event_type#1) AND (event_type#1 = purchase))
+Input [3]: [event_type#219, price#224, event_date#231]
+Condition : (isnotnull(event_type#219) AND (event_type#219 = purchase))
 
 (3) Project
-Output [2]: [price#6, event_date#13]
-Input [3]: [event_type#1, price#6, event_date#13]
+Output [2]: [price#224, event_date#231]
+Input [3]: [event_type#219, price#224, event_date#231]
 
 (4) HashAggregate
-Input [2]: [price#6, event_date#13]
-Keys [1]: [event_date#13]
-Functions [1]: [partial_sum(price#6)]
-Aggregate Attributes [1]: [sum#232]
-Results [2]: [event_date#13, sum#233]
+Input [2]: [price#224, event_date#231]
+Keys [1]: [event_date#231]
+Functions [1]: [partial_sum(price#224)]
+Aggregate Attributes [1]: [sum#450]
+Results [2]: [event_date#231, sum#451]
 
 (5) Exchange
-Input [2]: [event_date#13, sum#233]
-Arguments: hashpartitioning(event_date#13, 32), ENSURE_REQUIREMENTS, [plan_id=731]
+Input [2]: [event_date#231, sum#451]
+Arguments: hashpartitioning(event_date#231, 32), ENSURE_REQUIREMENTS, [plan_id=1021]
 
 (6) HashAggregate
-Input [2]: [event_date#13, sum#233]
-Keys [1]: [event_date#13]
-Functions [1]: [sum(price#6)]
-Aggregate Attributes [1]: [sum(price#6)#80]
-Results [2]: [event_date#13, round(sum(price#6)#80, 2) AS revenue#65]
+Input [2]: [event_date#231, sum#451]
+Keys [1]: [event_date#231]
+Functions [1]: [sum(price#224)]
+Aggregate Attributes [1]: [sum(price#224)#298]
+Results [2]: [event_date#231, round(sum(price#224)#298, 2) AS revenue#283]
 
 (7) Exchange
-Input [2]: [event_date#13, revenue#65]
-Arguments: SinglePartition, ENSURE_REQUIREMENTS, [plan_id=734]
+Input [2]: [event_date#231, revenue#283]
+Arguments: SinglePartition, ENSURE_REQUIREMENTS, [plan_id=1024]
 
 (8) Sort
-Input [2]: [event_date#13, revenue#65]
-Arguments: [event_date#13 ASC NULLS FIRST], false, 0
+Input [2]: [event_date#231, revenue#283]
+Arguments: [event_date#231 ASC NULLS FIRST], false, 0
 
 (9) Window
-Input [2]: [event_date#13, revenue#65]
-Arguments: [lag(revenue#65, -1, null) windowspecdefinition(event_date#13 ASC NULLS FIRST, specifiedwindowframe(RowFrame, -1, -1)) AS prev_day_revenue#81, avg(revenue#65) windowspecdefinition(event_date#13 ASC NULLS FIRST, specifiedwindowframe(RowFrame, -6, currentrow$())) AS _we0#85], [event_date#13 ASC NULLS FIRST]
+Input [2]: [event_date#231, revenue#283]
+Arguments: [lag(revenue#283, -1, null) windowspecdefinition(event_date#231 ASC NULLS FIRST, specifiedwindowframe(RowFrame, -1, -1)) AS prev_day_revenue#299, avg(revenue#283) windowspecdefinition(event_date#231 ASC NULLS FIRST, specifiedwindowframe(RowFrame, -6, currentrow$())) AS _we0#303], [event_date#231 ASC NULLS FIRST]
 
 (10) Project
-Output [5]: [event_date#13, revenue#65, prev_day_revenue#81, round((((revenue#65 - prev_day_revenue#81) / prev_day_revenue#81) * 100.0), 1) AS change_vs_prev_day_pct#82, round(_we0#85, 2) AS moving_avg_7d#83]
-Input [4]: [event_date#13, revenue#65, prev_day_revenue#81, _we0#85]
+Output [5]: [event_date#231, revenue#283, prev_day_revenue#299, round((((revenue#283 - prev_day_revenue#299) / prev_day_revenue#299) * 100.0), 1) AS change_vs_prev_day_pct#300, round(_we0#303, 2) AS moving_avg_7d#301]
+Input [4]: [event_date#231, revenue#283, prev_day_revenue#299, _we0#303]
 
 (11) AdaptiveSparkPlan
-Output [5]: [event_date#13, revenue#65, prev_day_revenue#81, change_vs_prev_day_pct#82, moving_avg_7d#83]
+Output [5]: [event_date#231, revenue#283, prev_day_revenue#299, change_vs_prev_day_pct#300, moving_avg_7d#301]
 Arguments: isFinalPlan=false
 
 

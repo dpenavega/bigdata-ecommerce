@@ -1,0 +1,25 @@
+{
+  "finished_at": "2026-10-18T17:00:47",
+  "sample_mode": false,
+  "steps": [
+    "ingest",
+    "etl",
+    "quality",
+    "queries",
+    "ml"
+  ],
+  "seconds_per_step": {
+    "ingest": 6.0,
+    "etl": 565.3,
+    "quality": 409.8,
+    "queries": 44.4,
+    "ml": 215.6
+  },
+  "total_seconds": 1241.0,
+  "outputs": {
+    "curated_rows": 67213463,
+    "q1_daily_funnel": 30,
+    "q2_top_brands_by_category": 42,
+    "q3_daily_revenue_trend": 29
+  }
+}
